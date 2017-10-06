@@ -5,6 +5,8 @@ date: "9/29/2017"
 output: pdf_document
 ---
 
+# FIRST WEEK
+
 ```{r setup, include=FALSE}
 setwd("/Users/benStraub/Desktop/580_consulting/")
 
@@ -119,6 +121,63 @@ histosforall(5)
 
 \includegraphics[width=450pt]{Day5.jpg}
 
+```{r}
+data_list <- list(Day6, Day7, Day8, Day9, Day10)
+
+#ndata_list <- lapply(data_list, `[`,-c(7:23))
+ndata_list <- lapply(data_list, `[`,-c(4:5))
+ndata_list <- lapply(ndata_list, `[`,-1)
+
+day6 <- ndata_list[[1]]
+  day6 <- day6[,-2]
+  day6 <- day6[,-15]
+  day6 <- day6[,-4]
+  day6 <- day6[,-3]
+View(day6)
+  
+#View(ndata_list[1])
+histosforall <- function(x){
+  dayx <- ndata_list[[x]]
+  dayx <- dayx[,-2]
+  dayx <- dayx[,-15]
+  dayx <- dayx[,-4]
+  dayx <- dayx[,-3]
+  jpeg(paste0("Day",x,".jpg"))
+  multi.hist(dayx, main = paste("Day", x, sep=""))
+}
+```
+
+# SECOND WEEK
+
+```{r}
+histosforall(1)
+```
+
+\includegraphics[width=450pt]{Day1.jpg}
+
+```{r, fig.width=1}
+histosforall(2)
+```
+
+\includegraphics[width=450pt]{Day2.jpg}
+
+```{r, fig.width=1}
+histosforall(3)
+```
+
+\includegraphics[width=450pt]{Day3.jpg}
+
+```{r, fig.width=1}
+histosforall(4)
+```
+
+\includegraphics[width=450pt]{Day4.jpg}
+
+```{r, fig.width=1}
+histosforall(5)
+```
+
+\includegraphics[width=450pt]{Day5.jpg}
 ```{r}
 
 #### Only done for Day 1
