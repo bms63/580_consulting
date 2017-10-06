@@ -1,0 +1,133 @@
+---
+title: "Fry Analysis"
+author: "Ben Straub"
+date: "9/29/2017"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+setwd("/Users/benStraub/Desktop/580_consulting/")
+
+library(readxl);library(XLConnect);library(dplyr);library(plyr)
+library(psych);library(ggplot2);library(tidytext)
+
+path <- read_xlsx("data.xlsx")
+
+data <- lapply(excel_sheets("data.xlsx"), read_xlsx, path = "data.xlsx")
+
+#VD <- function(sheet){
+#   View(data[sheet], title= paste(sheet, "sheet", sep=""))
+#}
+
+#VD(5)
+#VD(10)
+# Day 1-5 has 33 columns and Day 6-10 has 20 columns of collected data
+
+#for(i in 1:10){
+#  View(data[i],title= paste("Day",i, sep=""))
+#  }
+
+
+Day1 <- as.data.frame(data[1])
+Day2 <- as.data.frame(data[2])
+Day3 <- as.data.frame(data[3])
+Day4 <- as.data.frame(data[4])
+Day5 <- as.data.frame(data[5])
+Day6 <- as.data.frame(data[6])
+Day7 <- as.data.frame(data[7])
+Day8 <- as.data.frame(data[8])
+Day9 <- as.data.frame(data[9])
+Day10 <- as.data.frame(data[10])
+
+
+#colnames(Day1)[13] <- "allergies"
+#Day1$allergies <- as.factor(Day1$allergies)
+#nDay1 <- Day1[which(Day1$allergies==1 & Day1$Colds.or.Pregnancy==2 & Day1$Over.18==1),]
+#a<-dim(Day1)
+#b<-dim(nDay1)#6 people with allergies in Day 1 sample  
+
+Allergies <- function(x){
+  colnames(x)[13] <- "allergies"
+  nx <- x[which(x$allergies==1 & x$Colds.or.Pregnancy==2 & 
+                        x$Over.18==1),]
+a<-dim(x)[1]
+b<-dim(nx)[1]
+cat(paste("Orginal", a,"No Allergies", b,sep=","))
+}
+
+Allergies(Day1)# 6 people with allergies
+Allergies(Day2)# 4 people with allergies
+Allergies(Day3)# 4 people with allergies
+Allergies(Day4)# 10 people with allergies
+Allergies(Day5)# 20 people with allergies
+
+data_list <- list(Day1, Day2, Day3, Day4, Day5)
+
+ndata_list <- lapply(data_list, `[`,-c(7:23))
+ndata_list <- lapply(ndata_list, `[`,-c(4:5))
+ndata_list <- lapply(ndata_list, `[`,-1)
+
+#View(ndata_list[1])
+#View(ndata_list[2])
+#View(ndata_list[3])
+#View(ndata_list[4])
+#View(ndata_list[5])
+
+lapply(ndata_list, summary)
+
+day1 <- ndata_list[[1]]
+day1 <- day1[,-2]
+day1 <- day1[,-11]
+#multi.hist(day1) #error, not numeric
+
+histosforall <- function(x){
+  dayx <- ndata_list[[x]]
+  dayx <- dayx[,-2]
+  dayx <- dayx[,-11]
+  jpeg(paste0("Day",x,".jpg"))
+  multi.hist(dayx, main = paste("Day", x, sep=""))
+}
+```
+
+```{r}
+histosforall(1)
+```
+
+\includegraphics[width=450pt]{Day1.jpg}
+
+```{r, fig.width=1}
+histosforall(2)
+```
+
+\includegraphics[width=450pt]{Day2.jpg}
+
+```{r, fig.width=1}
+histosforall(3)
+```
+
+\includegraphics[width=450pt]{Day3.jpg}
+
+```{r, fig.width=1}
+histosforall(4)
+```
+
+\includegraphics[width=450pt]{Day4.jpg}
+
+```{r, fig.width=1}
+histosforall(5)
+```
+
+\includegraphics[width=450pt]{Day5.jpg}
+
+```{r}
+
+#### Only done for Day 1
+# paste cells into one string, use ";" as separator
+comments.string <- paste(Day1$Comments , collapse = " " )
+# split string at ";"
+comments.vector <- strsplit(comments.string , " " )[[1]]
+# get rid of white space to prevent errors
+comments.vector.clean <- gsub ( " " , "" , comments.vector )
+# tabulate data
+sort(table(comments.vector.clean),decreasing = TRUE)
+```
