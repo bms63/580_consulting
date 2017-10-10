@@ -1,0 +1,252 @@
+---
+title: "Fry Analysis"
+author: "Ben Straub"
+date: "9/29/2017"
+output: pdf_document
+---
+
+# FIRST WEEK
+
+```{r setup, include=FALSE}
+setwd("/Users/benStraub/Desktop/580_consulting/")
+
+library(readxl);library(XLConnect);library(dplyr);library(plyr)
+library(psych);library(ggplot2);library(tidytext)
+
+path <- read_xlsx("data.xlsx")
+
+data <- lapply(excel_sheets("data.xlsx"), read_xlsx, path = "data.xlsx")
+
+#VD <- function(sheet){
+#   View(data[sheet], title= paste(sheet, "sheet", sep=""))
+#}
+
+#VD(5)
+#VD(10)
+# Day 1-5 has 33 columns and Day 7-10 has 20 columns of collected data
+
+#for(i in 1:10){
+#  View(data[i],title= paste("Day",i, sep=""))
+#  }
+
+
+Day1 <- as.data.frame(data[1])
+Day2 <- as.data.frame(data[2])
+Day3 <- as.data.frame(data[3])
+Day4 <- as.data.frame(data[4])
+Day5 <- as.data.frame(data[5])
+Day7 <- as.data.frame(data[7])
+Day7 <- as.data.frame(data[7])
+Day8 <- as.data.frame(data[8])
+Day9 <- as.data.frame(data[9])
+Day10 <- as.data.frame(data[10])
+
+
+#colnames(Day1)[13] <- "allergies"
+#Day1$allergies <- as.factor(Day1$allergies)
+#nDay1 <- Day1[which(Day1$allergies==1 & Day1$Colds.or.Pregnancy==2 & Day1$Over.18==1),]
+#a<-dim(Day1)
+#b<-dim(nDay1)#7 people with allergies in Day 1 sample  
+
+Allergies <- function(x){
+  colnames(x)[13] <- "allergies"
+  nx <- x[which(x$allergies==1 & x$Colds.or.Pregnancy==2 & 
+                        x$Over.18==1),]
+a<-dim(x)[1]
+b<-dim(nx)[1]
+cat(paste("Orginal", a,"No Allergies", b,sep=","))
+}
+
+Allergies(Day1)# 7 people with allergies
+Allergies(Day2)# 4 people with allergies
+Allergies(Day3)# 4 people with allergies
+Allergies(Day4)# 10 people with allergies
+Allergies(Day5)# 20 people with allergies
+
+data_list <- list(Day1, Day2, Day3, Day4, Day5)
+
+ndata_list <- lapply(data_list, `[`,-c(7:23))
+ndata_list <- lapply(ndata_list, `[`,-c(4:5))
+ndata_list <- lapply(ndata_list, `[`,-1)
+
+#View(ndata_list[1])
+#View(ndata_list[2])
+#View(ndata_list[3])
+#View(ndata_list[4])
+#View(ndata_list[5])
+
+#lapply(ndata_list, summary)
+```
+
+```{r}
+day1 <- ndata_list[[1]]
+day1 <- day1[,-2]
+day1 <- day1[,-11]
+mod1 <- lm(Overall.Liking~.,data=day1)
+summary(mod1)
+
+day2 <- ndata_list[[2]]
+day2 <- day2[,-2]
+day2 <- day2[,-11]
+mod2 <- lm(Overall.Liking~.,data=day2)
+summary(mod2)
+
+day3 <- ndata_list[[3]]
+day3 <- day3[,-3]
+day3 <- day3[,-11]
+mod3 <- lm(Overall.Liking~.,data=day3)
+summary(mod3)
+
+day4 <- ndata_list[[4]]
+day4 <- day4[,-4]
+day4 <- day4[,-11]
+mod4 <- lm(Overall.Liking~.,data=day4)
+summary(mod4)
+
+day5 <- ndata_list[[5]]
+day5 <- day5[,-4]
+day5 <- day5[,-11]
+mod5 <- lm(Overall.Liking~.,data=day5)
+summary(mod5)
+
+#multi.hist(day1) #error, not numeric
+
+```
+  
+```{r}
+histosforall <- function(x){
+  dayx <- ndata_list[[x]]
+  dayx <- dayx[,-2]
+  dayx <- dayx[,-11]
+  jpeg(paste0("Day",x,".jpg"))
+  multi.hist(dayx, main = paste("Day", x, sep=""))
+}
+```
+
+```{r, eval=FALSE}
+histosforall(1)
+#\includegraphics[width=450pt]{Day1.jpg}
+```
+
+```{r, eval=FALSE,fig.width=1}
+histosforall(2)
+#\includegraphics[width=450pt]{Day2.jpg}
+```
+
+```{r, eval=FALSE,fig.width=1}
+histosforall(3)
+#\includegraphics[width=450pt]{Day3.jpg}
+```
+
+```{r, eval=FALSE,fig.width=1}
+histosforall(4)
+#\includegraphics[width=450pt]{Day4.jpg}
+```
+
+```{r, eval=FALSE,fig.width=1}
+histosforall(5)
+#\includegraphics[width=450pt]{Day5.jpg}
+```
+
+# SECOND WEEK
+
+```{r}
+data_list <- list(Day8, Day7, Day8, Day9, Day10)
+
+#ndata_list <- lapply(data_list, `[`,-c(7:23))
+ndata_list <- lapply(data_list, `[`,-c(4:5))
+ndata_list <- lapply(ndata_list, `[`,-1)
+
+day6 <- ndata_list[[1]]
+  day6 <- day6[,-2]
+  day6 <- day6[,-15]
+  day6 <- day6[,-4]
+  day6 <- day6[,-3]
+
+day7 <- ndata_list[[2]]
+  day7 <- day7[,-2]
+  day7 <- day7[,-15]
+  day7 <- day7[,-4]
+  day7 <- day7[,-3]  
+  
+day8 <- ndata_list[[3]]
+  day8 <- day8[,-2]
+  day8 <- day8[,-15]
+  day8 <- day8[,-4]
+  day8 <- day8[,-3]
+
+day9 <- ndata_list[[4]]
+  day9 <- day9[,-2]
+  day9 <- day9[,-15]
+  day9 <- day9[,-4]
+  day9 <- day9[,-3]
+  
+day10 <- ndata_list[[5]]
+  day10 <- day10[,-2]
+  day10 <- day10[,-15]
+  day10 <- day10[,-4]
+  day10 <- day10[,-3]
+
+mod6 <- lm(Overall.Liking~.,data=day6)
+summary(mod6)
+mod7 <- lm(Overall.Liking~.,data=day7)
+summary(mod7)
+mod8 <- lm(Overall.Liking~.,data=day8)
+summary(mod8)
+mod9 <- lm(Overall.Liking~.,data=day9)
+summary(mod9)
+mod10 <- lm(Overall.Liking~.,data=day10)
+summary(mod10)
+```
+
+```{r}
+#View(ndata_list[1])
+histosforall <- function(x){
+  dayx <- ndata_list[[x]]
+  dayx <- dayx[,-2]
+  dayx <- dayx[,-15]
+  dayx <- dayx[,-4]
+  dayx <- dayx[,-3]
+  jpeg(paste0("Day",x,".jpg"))
+  multi.hist(dayx, main = paste("Day", x, sep=""))
+}
+```
+
+
+```{r, eval=FALSE,fig.width=1}
+histosforall(1)
+#\includegraphics[width=450pt]{Day1.jpg}
+```
+
+```{r, eval=FALSE,fig.width=1}
+histosforall(2)
+#\includegraphics[width=450pt]{Day2.jpg}
+```
+
+```{r, eval=FALSE,fig.width=1}
+histosforall(3)
+#\includegraphics[width=450pt]{Day3.jpg}
+```
+
+```{r, eval=FALSE,fig.width=1}
+histosforall(4)
+#\includegraphics[width=450pt]{Day4.jpg}
+```
+
+```{r, eval=FALSE,fig.width=1}
+histosforall(5)
+#\includegraphics[width=450pt]{Day5.jpg}
+```
+
+```{r, eval=FALSE}
+
+#### Only done for Day 1
+# paste cells into one string, use ";" as separator
+comments.string <- paste(Day1$Comments , collapse = " " )
+# split string at ";"
+comments.vector <- strsplit(comments.string , " " )[[1]]
+# get rid of white space to prevent errors
+comments.vector.clean <- gsub ( " " , "" , comments.vector )
+# tabulate data
+sort(table(comments.vector.clean),decreasing = TRUE)
+```
