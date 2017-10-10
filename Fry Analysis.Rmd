@@ -69,7 +69,7 @@ ndata_list <- lapply(data_list, `[`,-c(7:23))
 ndata_list <- lapply(ndata_list, `[`,-c(4:5))
 ndata_list <- lapply(ndata_list, `[`,-1)
 
-#View(ndata_list[1])
+View(ndata_list[1])
 #View(ndata_list[2])
 #View(ndata_list[3])
 #View(ndata_list[4])
@@ -80,6 +80,33 @@ lapply(ndata_list, summary)
 day1 <- ndata_list[[1]]
 day1 <- day1[,-2]
 day1 <- day1[,-11]
+mod1 <- lm(Overall.Liking~.,data=day1)
+summary(mod1)
+
+day2 <- ndata_list[[2]]
+day2 <- day2[,-2]
+day2 <- day2[,-11]
+mod2 <- lm(Overall.Liking~.,data=day2)
+summary(mod2)
+
+day3 <- ndata_list[[3]]
+day3 <- day3[,-3]
+day3 <- day3[,-11]
+mod3 <- lm(Overall.Liking~.,data=day3)
+summary(mod3)
+
+day4 <- ndata_list[[4]]
+day4 <- day4[,-4]
+day4 <- day4[,-11]
+mod4 <- lm(Overall.Liking~.,data=day4)
+summary(mod4)
+
+day5 <- ndata_list[[5]]
+day5 <- day5[,-4]
+day5 <- day5[,-11]
+mod5 <- lm(Overall.Liking~.,data=day5)
+summary(mod5)
+
 #multi.hist(day1) #error, not numeric
 
 histosforall <- function(x){
