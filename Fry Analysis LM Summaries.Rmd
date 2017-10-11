@@ -8,9 +8,9 @@ output: pdf_document
 # FIRST WEEK
 
 ```{r setup, include=FALSE}
-setwd("/Users/benStraub/Desktop/580_consulting/")
+#setwd("/Users/benStraub/Desktop/580_consulting/")
 
-library(readxl);library(XLConnect);library(dplyr);library(plyr)
+library(readxl);library(dplyr);library(plyr)
 library(psych);library(ggplot2);library(tidytext)
 
 path <- read_xlsx("data.xlsx")
@@ -35,7 +35,7 @@ Day2 <- as.data.frame(data[2])
 Day3 <- as.data.frame(data[3])
 Day4 <- as.data.frame(data[4])
 Day5 <- as.data.frame(data[5])
-Day7 <- as.data.frame(data[7])
+Day6 <- as.data.frame(data[6])
 Day7 <- as.data.frame(data[7])
 Day8 <- as.data.frame(data[8])
 Day9 <- as.data.frame(data[9])
@@ -82,36 +82,98 @@ ndata_list <- lapply(ndata_list, `[`,-1)
 day1 <- ndata_list[[1]]
 day1 <- day1[,-2]
 day1 <- day1[,-11]
+day1 <- day1[,-1]
+pcamod1 <- princomp(day1, scores=TRUE)
+day1$Gender <- as.factor(day1$Gender)
+day1$Samp. <- as.factor(day1$Samp.)
+day1$Age <- as.factor(day1$Age)
 mod1 <- lm(Overall.Liking~.,data=day1)
-summary(mod1)
+summary(mod1) # gender, appearance, taste, texture are significant
+table(day1$Gender)# 58 male and 98 female
+table(day1$Age) #1  2  3  4  5 
+#................42 38 10 34 32 
+table(day1$Samp.)# Samples are balanced
+boxplot(day1$Taste)
+boxplot(day1$Temperature)
+table(day1$Temperature)
+```
 
+```{r}
 day2 <- ndata_list[[2]]
 day2 <- day2[,-2]
 day2 <- day2[,-11]
-mod2 <- lm(Overall.Liking~.,data=day2)
-summary(mod2)
-
-day3 <- ndata_list[[3]]
-day3 <- day3[,-3]
-day3 <- day3[,-11]
-mod3 <- lm(Overall.Liking~.,data=day3)
-summary(mod3)
-
-day4 <- ndata_list[[4]]
-day4 <- day4[,-4]
-day4 <- day4[,-11]
-mod4 <- lm(Overall.Liking~.,data=day4)
-summary(mod4)
-
-day5 <- ndata_list[[5]]
-day5 <- day5[,-4]
-day5 <- day5[,-11]
-mod5 <- lm(Overall.Liking~.,data=day5)
-summary(mod5)
-
-#multi.hist(day1) #error, not numeric
-
+day2 <- day2[,-1]
+pcamod2 <- princomp(day2, scores=TRUE)
+day2$Gender <- as.factor(day2$Gender)
+day2$Samp. <- as.factor(day2$Samp.)
+day2$Age <- as.factor(day2$Age)
+mod2 <- lm(Overall.Liking~.,data=day2) 
+summary(mod2)# appearance, taste, texture are significant, age4 significant
+table(day2$Gender)# 74 males and 74 females
+table(day2$Age)# 1  2  3  4  5 
+#................28 38 20 34 28 
+table(day2$Samp.)# Samples are balanced
+boxplot(day2$Taste)
+boxplot(day2$Temperature)
 ```
+
+```{r}
+day3 <- ndata_list[[3]]
+day3 <- day3[,-2]
+day3 <- day3[,-11]
+day3 <- day3[,-1]
+pcamod3 <- princomp(day3, scores=TRUE)
+day3$Gender <- as.factor(day3$Gender)
+day3$Samp. <- as.factor(day3$Samp.)
+day3$Age <- as.factor(day3$Age)
+mod3 <- lm(Overall.Liking~.,data=day3) # appearance, taste, texture are significant
+summary(mod3)
+table(day3$Gender)# 62 males and 84 females
+table(day3$Age)# 1  2  3  4  5 
+#................34 36 20 26 30 
+table(day3$Samp.)# Samples are balanced
+boxplot(day3$Taste)
+boxplot(day3$Temperature)
+```
+
+
+```{r}
+day4 <- ndata_list[[4]]
+day4 <- day4[,-2]
+day4 <- day4[,-11]
+day4 <- day4[,-1]
+pcamod4 <- princomp(day4, scores=TRUE)
+day4$Gender <- as.factor(day4$Gender)
+day4$Samp. <- as.factor(day4$Samp.)
+day4$Age <- as.factor(day4$Age)
+mod4 <- lm(Overall.Liking~.,data=day4)
+summary(mod4)#Appearance, Taste and Texture are significant
+table(day4$Gender)# 94 males and 96 females
+table(day4$Age)# 1  2  3  4  5 
+#................58 52  8 38 34 
+table(day4$Samp.)# Samples are balanced
+boxplot(day4$Taste)
+boxplot(day4$Temperature)
+```
+
+```{r}
+day5 <- ndata_list[[5]]
+day5 <- day5[,-2]
+day5 <- day5[,-11]
+day5 <- day5[,-1]
+day5$Gender <- as.factor(day5$Gender)
+day5$Samp. <- as.factor(day5$Samp.)
+day5$Age <- as.factor(day5$Age)
+mod5 <- lm(Overall.Liking~.,data=day5)
+summary(mod5)#Female, Apperance, Taste and Texture are significant
+table(day5$Gender)# 95 males and 120 females
+table(day5$Age)# 1  2  3  4  5 
+#................94 46 14 20 26 
+table(day5$Samp.)# Samples are balanced
+boxplot(day5$Taste)
+boxplot(day5$Temperature)`
+```
+
   
 ```{r}
 histosforall <- function(x){
