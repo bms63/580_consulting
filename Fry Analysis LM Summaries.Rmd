@@ -7,13 +7,10 @@ output: pdf_document
 
 # FIRST WEEK
 
-```{r setup, include=FALSE}
-#setwd("/Users/benStraub/Desktop/580_consulting/")
+```{r setup, include=FALSE, echo=FALSE}
+setwd("/Users/benStraub/Desktop/580_consulting/")
 
-library(readxl);library(dplyr);library(plyr)
-library(psych);library(ggplot2);library(tidytext)
-
-path <- read_xlsx("data.xlsx")
+library(readxl);library(dplyr);library(plyr);library(psych);library(ggplot2);library(tidytext);library(knitr);library(vioplot)
 
 data <- lapply(excel_sheets("data.xlsx"), read_xlsx, path = "data.xlsx")
 
@@ -62,43 +59,46 @@ Allergies(Day2)# 4 people with allergies
 Allergies(Day3)# 4 people with allergies
 Allergies(Day4)# 10 people with allergies
 Allergies(Day5)# 20 people with allergies
+# There are not that many people with allergies and they are all over the place.  Dropping all of these variables.
 
 data_list <- list(Day1, Day2, Day3, Day4, Day5)
 
 ndata_list <- lapply(data_list, `[`,-c(7:23))
 ndata_list <- lapply(ndata_list, `[`,-c(4:5))
 ndata_list <- lapply(ndata_list, `[`,-1)
-
-#View(ndata_list[1])
-#View(ndata_list[2])
-#View(ndata_list[3])
-#View(ndata_list[4])
-#View(ndata_list[5])
-
 #lapply(ndata_list, summary)
 ```
 
-```{r}
+```{r, echo=FALSE}
 day1 <- ndata_list[[1]]
 day1 <- day1[,-2]
 day1 <- day1[,-11]
 day1 <- day1[,-1]
 pcamod1 <- princomp(day1, scores=TRUE)
-day1$Gender <- as.factor(day1$Gender)
-day1$Samp. <- as.factor(day1$Samp.)
-day1$Age <- as.factor(day1$Age)
+day1$Gender <- as.factor(day1$Gender) # 1 is male and 2 is female
+day1$Samp. <- as.factor(day1$Samp.) # Two types of Brand of Oil
+day1$Age <- as.factor(day1$Age) # Age of Oil
 mod1 <- lm(Overall.Liking~.,data=day1)
-summary(mod1) # gender, appearance, taste, texture are significant
-table(day1$Gender)# 58 male and 98 female
-table(day1$Age) #1  2  3  4  5 
+kable(summary(mod1)$coefficients, caption="Linear Model for Day 1") # gender, appearance, taste, texture are significant
+day1G <- table(day1$Gender)# 58 male and 98 female
+day1A <- table(day1$Age) #1  2  3  4  5 
 #................42 38 10 34 32 
-table(day1$Samp.)# Samples are balanced
-boxplot(day1$Taste)
-boxplot(day1$Temperature)
-table(day1$Temperature)
+day1S <- table(day1$Samp.)# Samples are balanced
 ```
 
-```{r}
+```{r, echo=FALSE}
+par(mfrow = c(1,2))
+x1 <- day1$Taste
+vioplot(x1)
+title("Day 1 Taste")
+x2 <- day1$Temperature
+vioplot(x2)
+title("Day 1 Temperature")
+```
+
+\break
+
+```{r, echo=FALSE}
 day2 <- ndata_list[[2]]
 day2 <- day2[,-2]
 day2 <- day2[,-11]
@@ -108,16 +108,27 @@ day2$Gender <- as.factor(day2$Gender)
 day2$Samp. <- as.factor(day2$Samp.)
 day2$Age <- as.factor(day2$Age)
 mod2 <- lm(Overall.Liking~.,data=day2) 
-summary(mod2)# appearance, taste, texture are significant, age4 significant
-table(day2$Gender)# 74 males and 74 females
-table(day2$Age)# 1  2  3  4  5 
+kable(summary(mod2)$coefficients, caption="Linear Model for Day 2")# appearance, taste, texture are significant, age4 significant
+
+day2G <- table(day2$Gender)# 74 males and 74 females
+day2A <- table(day2$Age)# 1  2  3  4  5 
 #................28 38 20 34 28 
-table(day2$Samp.)# Samples are balanced
-boxplot(day2$Taste)
-boxplot(day2$Temperature)
+day2S <- table(day2$Samp.)# Samples are balanced
 ```
 
-```{r}
+```{r, echo=FALSE}
+par(mfrow = c(1,2))
+x1 <- day2$Taste
+vioplot(x1)
+title("Day 2 Taste")
+x2 <- day2$Temperature
+vioplot(x2)
+title("Day 2 Temperature")
+```
+
+\break
+
+```{r, echo=FALSE}
 day3 <- ndata_list[[3]]
 day3 <- day3[,-2]
 day3 <- day3[,-11]
@@ -127,17 +138,26 @@ day3$Gender <- as.factor(day3$Gender)
 day3$Samp. <- as.factor(day3$Samp.)
 day3$Age <- as.factor(day3$Age)
 mod3 <- lm(Overall.Liking~.,data=day3) # appearance, taste, texture are significant
-summary(mod3)
-table(day3$Gender)# 62 males and 84 females
-table(day3$Age)# 1  2  3  4  5 
+kable(summary(mod3)$coefficients, caption="Linear Model for Day 3")
+day3G <- table(day3$Gender)# 62 males and 84 females
+day3A <- table(day3$Age)# 1  2  3  4  5 
 #................34 36 20 26 30 
-table(day3$Samp.)# Samples are balanced
-boxplot(day3$Taste)
-boxplot(day3$Temperature)
+day3S <- table(day3$Samp.)# Samples are balanced
 ```
 
+```{r, echo=FALSE}
+par(mfrow = c(1,2))
+x1 <- day3$Taste
+vioplot(x1)
+title("Day 3 Taste")
+x2 <- day3$Temperature
+vioplot(x2)
+title("Day 3 Temperature")
+```
 
-```{r}
+\break
+
+```{r, echo=FALSE}
 day4 <- ndata_list[[4]]
 day4 <- day4[,-2]
 day4 <- day4[,-11]
@@ -147,16 +167,26 @@ day4$Gender <- as.factor(day4$Gender)
 day4$Samp. <- as.factor(day4$Samp.)
 day4$Age <- as.factor(day4$Age)
 mod4 <- lm(Overall.Liking~.,data=day4)
-summary(mod4)#Appearance, Taste and Texture are significant
-table(day4$Gender)# 94 males and 96 females
-table(day4$Age)# 1  2  3  4  5 
+kable(summary(mod4)$coefficients, caption="Linear Model for Day 4") #Appearance, Taste and Texture are significant
+day4G <- table(day4$Gender)# 94 males and 96 females
+day4A <- table(day4$Age)# 1  2  3  4  5 
 #................58 52  8 38 34 
-table(day4$Samp.)# Samples are balanced
-boxplot(day4$Taste)
-boxplot(day4$Temperature)
+day4S <- table(day4$Samp.)# Samples are balanced
 ```
 
-```{r}
+```{r, echo=FALSE}
+par(mfrow = c(1,2))
+x1 <- day4$Taste
+vioplot(x1)
+title("Day 4 Taste")
+x2 <- day4$Temperature
+vioplot(x2)
+title("Day 4 Temperature")
+```
+
+\break
+
+```{r, echo=FALSE}
 day5 <- ndata_list[[5]]
 day5 <- day5[,-2]
 day5 <- day5[,-11]
@@ -165,54 +195,67 @@ day5$Gender <- as.factor(day5$Gender)
 day5$Samp. <- as.factor(day5$Samp.)
 day5$Age <- as.factor(day5$Age)
 mod5 <- lm(Overall.Liking~.,data=day5)
-summary(mod5)#Female, Apperance, Taste and Texture are significant
-table(day5$Gender)# 95 males and 120 females
-table(day5$Age)# 1  2  3  4  5 
+kable(summary(mod5)$coefficients, caption="Linear Model for Day 5") #Female, Apperance, Taste and Texture are significant
+day5G <- table(day5$Gender)# 95 males and 120 females
+day5A <- table(day5$Age)# 1  2  3  4  5 
 #................94 46 14 20 26 
-table(day5$Samp.)# Samples are balanced
-boxplot(day5$Taste)
-boxplot(day5$Temperature)`
+day5S <- table(day5$Samp.)# Samples are balanced
 ```
 
-  
-```{r}
-histosforall <- function(x){
-  dayx <- ndata_list[[x]]
-  dayx <- dayx[,-2]
-  dayx <- dayx[,-11]
-  jpeg(paste0("Day",x,".jpg"))
-  multi.hist(dayx, main = paste("Day", x, sep=""))
-}
+```{r, echo=FALSE}
+par(mfrow = c(1,2))
+x1 <- day5$Taste
+vioplot(x1)
+title("Day 5 Taste")
+x2 <- day5$Temperature
+vioplot(x2)
+title("Day 5 Temperature")
 ```
 
-```{r, eval=FALSE}
-histosforall(1)
-#\includegraphics[width=450pt]{Day1.jpg}
+```{r, echo=FALSE}
+# Gender Table for 1st Week Data
+firstweekGender <- as.data.frame(rbind(day1G, day2G, day3G, day4G, day5G))
+totGender <- colSums((firstweekGender))
+firstweekGender <- rbind( firstweekGender,totGender)
+row.names(firstweekGender) <- c("Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Total")
+colnames(firstweekGender) <- c("Male", "Female")
+#firstweekGender
+
+# Age Table for 1st Week Data
+firstweekAge <- rbind(day1A, day2A, day3A, day4A, day5A)
+totAge<- colSums((firstweekAge))
+firstweekAge <- rbind( firstweekAge,totAge)
+row.names(firstweekAge) <- c("Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Total")
+colnames(firstweekAge) <- c("Age 1", "Age 2", "Age 3", "Age 4", "Age 5")
+#firstweekAge
+
+# Brand Table for 1st Week Data
+firstweekSample <- rbind(day1S, day2S, day3S, day4S, day5S)
+totSample <- colSums((firstweekSample))
+firstweekSample <- rbind( firstweekSample,totSample)
+row.names(firstweekSample) <- c("Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Total")
+colnames(firstweekSample) <- c("Mel Fry", "Clear Valley")
+#firstweekSample
+
 ```
 
-```{r, eval=FALSE,fig.width=1}
-histosforall(2)
-#\includegraphics[width=450pt]{Day2.jpg}
+```{r, echo=FALSE}
+#jpeg(paste0("Gender.jpg"))
+kable(firstweekGender, caption="Gender 1st Week")
+
+#jpeg(paste0("Age"))
+kable(firstweekAge, caption="Age of Oil 1st Week")
+
+#jpeg(paste0("Brand.jpg"))
+kable(firstweekSample, caption="Brand of Oil")
 ```
 
-```{r, eval=FALSE,fig.width=1}
-histosforall(3)
-#\includegraphics[width=450pt]{Day3.jpg}
-```
 
-```{r, eval=FALSE,fig.width=1}
-histosforall(4)
-#\includegraphics[width=450pt]{Day4.jpg}
-```
 
-```{r, eval=FALSE,fig.width=1}
-histosforall(5)
-#\includegraphics[width=450pt]{Day5.jpg}
-```
 
 # SECOND WEEK
 
-```{r}
+```{r, echo=FALSE}
 data_list <- list(Day8, Day7, Day8, Day9, Day10)
 
 #ndata_list <- lapply(data_list, `[`,-c(7:23))
@@ -248,20 +291,150 @@ day10 <- ndata_list[[5]]
   day10 <- day10[,-15]
   day10 <- day10[,-4]
   day10 <- day10[,-3]
-
-mod6 <- lm(Overall.Liking~.,data=day6)
-summary(mod6)
-mod7 <- lm(Overall.Liking~.,data=day7)
-summary(mod7)
-mod8 <- lm(Overall.Liking~.,data=day8)
-summary(mod8)
-mod9 <- lm(Overall.Liking~.,data=day9)
-summary(mod9)
-mod10 <- lm(Overall.Liking~.,data=day10)
-summary(mod10)
 ```
 
-```{r}
+```{r, echo=FALSE}
+pcamod6 <- princomp(day6, scores=TRUE)
+day6$Gender <- as.factor(day6$Gender)
+day6$Samp. <- as.factor(day6$Samp.)
+day6$Age <- as.factor(day6$Age)
+mod6 <- lm(Overall.Liking~.,data=day6)
+kable(summary(mod6)$coefficients, caption="Linear Model for Day 6") 
+day6G <- table(day6$Gender)
+day6A <- table(day6$Age) 
+day6S <- table(day6$Samp.)#
+
+par(mfrow = c(1,2))
+x1 <- day6$Taste
+vioplot(x1)
+title("Day 6 Taste")
+x2 <- day6$Temperature
+vioplot(x2)
+title("Day 6 Temperature")
+```
+
+```{r, echo=FALSE}
+pcamod7 <- princomp(day7, scores=TRUE)
+day7$Gender <- as.factor(day7$Gender)
+day7$Samp. <- as.factor(day7$Samp.)
+day7$Age <- as.factor(day7$Age)
+mod7 <- lm(Overall.Liking~.,data=day7)
+kable(summary(mod7)$coefficients, caption="Linear Model for Day 7") 
+day7G <- table(day7$Gender)
+day7A <- table(day7$Age)
+day7S <- table(day7$Samp.)
+
+par(mfrow = c(1,2))
+x1 <- day7$Taste
+vioplot(x1)
+title("Day 7 Taste")
+x2 <- day7$Temperature
+vioplot(x2)
+title("Day 7 Temperature")
+```
+
+```{r, echo=FALSE}
+pcamod8 <- princomp(day8, scores=TRUE)
+day8$Gender <- as.factor(day8$Gender)
+day8$Samp. <- as.factor(day8$Samp.)
+day8$Age <- as.factor(day8$Age)
+mod8 <- lm(Overall.Liking~.,data=day8)
+kable(summary(mod8)$coefficients, caption="Linear Model for Day 8") #Appearance, Taste and Texture are significant
+day8G <- table(day8$Gender)# 98 males and 96 females
+day8A <- table(day8$Age)# 1  2  3  8  5 
+#................58 52  8 38 38 
+day8S <- table(day8$Samp.)# Samples are balanced
+
+par(mfrow = c(1,2))
+x1 <- day8$Taste
+vioplot(x1)
+title("Day 8 Taste")
+x2 <- day8$Temperature
+vioplot(x2)
+title("Day 8 Temperature")
+```
+
+```{r, echo=FALSE}
+pcamod9 <- princomp(day9, scores=TRUE)
+day9$Gender <- as.factor(day9$Gender)
+day9$Samp. <- as.factor(day9$Samp.)
+day9$Age <- as.factor(day9$Age)
+mod9 <- lm(Overall.Liking~.,data=day9)
+kable(summary(mod9)$coefficients, caption="Linear Model for Day 9") #Appearance, Taste and Texture are significant
+day9G <- table(day9$Gender)# 99 males and 96 females
+day9A <- table(day9$Age)# 1  2  3  9  5 
+#................58 52  8 38 39 
+day9S <- table(day9$Samp.)# Samples are balanced
+
+par(mfrow = c(1,2))
+x1 <- day9$Taste
+vioplot(x1)
+title("Day 9 Taste")
+x2 <- day9$Temperature
+vioplot(x2)
+title("Day 9 Temperature")
+```
+
+```{r, echo=FALSE}
+pcamod10 <- princomp(day10, scores=TRUE)
+day10$Gender <- as.factor(day10$Gender)
+day10$Samp. <- as.factor(day10$Samp.)
+day10$Age <- as.factor(day10$Age)
+mod10 <- lm(Overall.Liking~.,data=day10)
+kable(summary(mod10)$coefficients, caption="Linear Model for Day 10") #Appearance, Taste and Texture are significant
+day10G <- table(day10$Gender)# 910 males and 96 females
+day10A <- table(day10$Age)# 1  2  3  10  5 
+#................58 52  8 38 310 
+day10S <- table(day10$Samp.)# Samples are balanced
+
+par(mfrow = c(1,2))
+x1 <- day10$Taste
+vioplot(x1)
+title("Day 10 Taste")
+x2 <- day10$Temperature
+vioplot(x2)
+title("Day 10 Temperature")
+```
+
+```{r, echo=FALSE}
+# Gender Table for 2nd Week Data
+secondweekGender <- as.data.frame(rbind(day6G, day7G, day8G, day9G, day10G))
+totGender <- colSums((secondweekGender))
+secondweekGender <- rbind(secondweekGender,totGender)
+row.names(secondweekGender) <- c("Day 6", "Day 7", "Day 8", "Day 9", "Day 10", "Total")
+colnames(secondweekGender) <- c("Male", "Female")
+#firstweekGender
+
+# Age Table for 1st Week Data
+secondweekAge <- rbind(day6A, day7A, day8A, day9A, day10A)
+totAge<- colSums((secondweekAge))
+secondweekAge <- rbind(secondweekAge,totAge)
+row.names(secondweekAge) <- c("Day 6", "Day 7", "Day 8", "Day 9", "Day 10", "Total")
+colnames(secondweekAge) <- c("Age 1", "Age 2", "Age 3", "Age 4", "Age 5")
+#firstweekAge
+
+# Brand Table for 1st Week Data
+secondweekSample <- rbind(day6S, day7S, day8S, day9S, day10S)
+totSample <- colSums((secondweekSample))
+secondweekSample <- rbind(secondweekSample,totSample)
+row.names(secondweekSample) <- c("Day 6", "Day 7", "Day 8", "Day 9", "Day 10", "Total")
+colnames(secondweekSample) <- c("Mel Fry", "Clear Valley")
+#firstweekSample
+
+```
+
+```{r, echo=FALSE}
+#jpeg(paste0("Gender.jpg"))
+kable(secondweekGender, caption="Gender 2nd Week")
+
+#jpeg(paste0("Age"))
+kable(secondweekAge, caption="Age of Oil 2nd Week")
+
+#jpeg(paste0("Brand.jpg"))
+kable(secondweekSample, caption="Brand of Oil")
+```
+
+```{r, echo=FALSE}
 #View(ndata_list[1])
 histosforall <- function(x){
   dayx <- ndata_list[[x]]
@@ -274,6 +447,40 @@ histosforall <- function(x){
 }
 ```
 
+```{r, echo=FALSE}
+histosforall <- function(x){
+  dayx <- ndata_list[[x]]
+  dayx <- dayx[,-2]
+  dayx <- dayx[,-11]
+  jpeg(paste0("Day",x,".jpg"))
+  multi.hist(dayx, main = paste("Day", x, sep=""))
+}
+```
+
+```{r, eval=FALSE}
+histosforall(1)
+#\includegraphics[width=450pt]{Day1.jpg}
+```
+
+```{r, eval=FALSE,fig.width=1}
+histosforall(2)
+#\includegraphics[width=450pt]{Day2.jpg}
+```
+
+```{r, eval=FALSE,fig.width=1}
+histosforall(3)
+#\includegraphics[width=450pt]{Day3.jpg}
+```
+
+```{r, eval=FALSE,fig.width=1}
+histosforall(4)
+#\includegraphics[width=450pt]{Day4.jpg}
+```
+
+```{r, eval=FALSE,fig.width=1}
+histosforall(5)
+#\includegraphics[width=450pt]{Day5.jpg}
+```
 
 ```{r, eval=FALSE,fig.width=1}
 histosforall(1)
@@ -299,6 +506,7 @@ histosforall(4)
 histosforall(5)
 #\includegraphics[width=450pt]{Day5.jpg}
 ```
+
 
 ```{r, eval=FALSE}
 
